@@ -1,20 +1,23 @@
 import { DateTime } from 'luxon';
 import { countryTimeZone } from './countryTimeZone.js';
 
-export const createEventObject = ({summary,description = '',date,time,duration,country}) => {
+
+export const createEventObject = ({ summary, description = '', eventDate, duration, country = "Ecuador" }) => {
   const timeZone = countryTimeZone[country] || 'UTC';
-  const startDateTime = DateTime.fromFormat(`${date} ${time}`, 'yyyy-LL-dd HH:mm', { zone: timeZone });
+
+  const startDateTime = DateTime.fromISO(eventDate).setZone(timeZone, { keepLocalTime: true });
   const endDateTime = startDateTime.plus({ minutes: duration });
+
   return {
     summary,
     description,
     start: {
-      dateTime: startDateTime.toISO(), 
-      timeZone
+      dateTime: startDateTime.toISO(),
+      timeZone,
     },
     end: {
       dateTime: endDateTime.toISO(),
-      timeZone
-    }
+      timeZone,
+    },
   };
 };
